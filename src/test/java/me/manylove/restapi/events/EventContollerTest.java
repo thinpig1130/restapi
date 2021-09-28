@@ -1,5 +1,6 @@
 package me.manylove.restapi.events;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -31,77 +32,9 @@ class EventContollerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-//    @Test
-//    @DisplayName("Event 생성 API 확인 / 받기로 한 값 이외의 무시")
-//    public void createEvent() throws Exception {
-//
-//        Event event = Event.builder()
-//                .id(100)
-//                .name("Spring")
-//                .description("Rest API Development with Spring")
-//                .beginEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47 ))
-//                .closeEnrollmentDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
-//                .beginEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
-//                .endEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
-//                .basePrice(100)
-//                .maxPrice(200)
-//                .limitOfEnrollment(100)
-//                .location("강남역 D2 스타텁 팩토리")
-//                .free(true)
-//                .offLine(false)
-//                .build();
-//
-//        // .perform(요청 생성)
-//        // .andExpect(기대하는 결과)
-//        mockMvc.perform(post("/api/events")
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .accept(MediaTypes.HAL_JSON)
-//                    .content(objectMapper.writeValueAsString(event)))
-//                .andDo(print())
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("id").exists())
-//                .andExpect(header().exists(HttpHeaders.LOCATION))
-//                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-//                .andExpect(jsonPath("id").value(Matchers.not(100)))
-//                .andExpect(jsonPath("free").value(Matchers.not(true)))
-//                .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()));
-////                .andExpect(jsonPath("offLine").value(Matchers.not(false)));
-//    }
-
     @Test
-    @DisplayName("Event 생성 API 확인")
-    public void createEventDto() throws Exception {
-
-        EventDto event = EventDto.builder()
-                .name("Spring")
-                .description("Rest API Development with Spring")
-                .beginEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47 ))
-                .closeEnrollmentDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
-                .beginEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
-                .endEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
-                .basePrice(100)
-                .maxPrice(200)
-                .limitOfEnrollment(100)
-                .location("강남역 D2 스타텁 팩토리")
-                .build();
-
-        mockMvc.perform(post("/api/events")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaTypes.HAL_JSON)
-                        .content(objectMapper.writeValueAsString(event)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").exists())
-                .andExpect(header().exists(HttpHeaders.LOCATION))
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-                .andExpect(jsonPath("id").value(Matchers.not(100)))
-                .andExpect(jsonPath("free").value(Matchers.not(true)))
-                .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()));
-    }
-
-    @Test
-    @DisplayName("Event 생성 API 오류 확인")
-    public void createEventError() throws Exception {
+    @DisplayName("Event 생성 API 확인 / 받기로 한 값 이외의 무시")
+    public void createEvent() throws Exception {
 
         Event event = Event.builder()
                 .id(100)
@@ -119,11 +52,94 @@ class EventContollerTest {
                 .offLine(false)
                 .build();
 
+        // .perform(요청 생성)
+        // .andExpect(기대하는 결과)
+        mockMvc.perform(post("/api/events")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaTypes.HAL_JSON)
+                    .content(objectMapper.writeValueAsString(event)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("id").exists())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonPath("id").value(Matchers.not(100)))
+                .andExpect(jsonPath("free").value(Matchers.not(true)))
+                .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()));
+//                .andExpect(jsonPath("offLine").value(Matchers.not(false)));
+    }
+
+//    @Test
+//    @DisplayName("Event 생성 API 확인")
+//    public void createEventDto() throws Exception {
+//
+//        EventDto event = EventDto.builder()
+//                .name("Spring")
+//                .description("Rest API Development with Spring")
+//                .beginEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47 ))
+//                .closeEnrollmentDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
+//                .beginEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
+//                .endEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
+//                .basePrice(100)
+//                .maxPrice(200)
+//                .limitOfEnrollment(100)
+//                .location("강남역 D2 스타텁 팩토리")
+//                .build();
+//
+//        mockMvc.perform(post("/api/events")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaTypes.HAL_JSON)
+//                        .content(objectMapper.writeValueAsString(event)))
+//                .andDo(print())
+//                .andExpect(status().isCreated())
+//                .andExpect(jsonPath("id").exists())
+//                .andExpect(header().exists(HttpHeaders.LOCATION))
+//                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+//                .andExpect(jsonPath("id").value(Matchers.not(100)))
+//                .andExpect(jsonPath("free").value(Matchers.not(true)))
+//                .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()));
+//    }
+
+//    @Test
+//    @DisplayName("Event 생성 API 오류 확인")
+//    public void createEventError() throws Exception {
+//
+//        Event event = Event.builder()
+//                .id(100)
+//                .name("Spring")
+//                .description("Rest API Development with Spring")
+//                .beginEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47 ))
+//                .closeEnrollmentDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
+//                .beginEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
+//                .endEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
+//                .basePrice(100)
+//                .maxPrice(200)
+//                .limitOfEnrollment(100)
+//                .location("강남역 D2 스타텁 팩토리")
+//                .free(true)
+//                .offLine(false)
+//                .build();
+//
+//        mockMvc.perform(post("/api/events")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaTypes.HAL_JSON)
+//                        .content(objectMapper.writeValueAsString(event)))
+//                .andDo(print())
+//                .andExpect(status().isBadRequest());
+//    }
+
+    @Test
+    @DisplayName("Validation Test")
+    public void create_event_bad_request_empty_input() throws Exception {
+        EventDto event = EventDto.builder()
+                .build();
+
         mockMvc.perform(post("/api/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON)
                         .content(objectMapper.writeValueAsString(event)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+
     }
 }
