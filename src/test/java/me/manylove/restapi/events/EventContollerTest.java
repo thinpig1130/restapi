@@ -129,7 +129,7 @@ class EventContollerTest {
 //    }
 
     @Test
-    @DisplayName("Validation Test")
+    @DisplayName("Validation Test : 입력되어야 할 값이 입력되지 않음")
     public void create_event_bad_request_empty_input() throws Exception {
         EventDto event = EventDto.builder()
                 .build();
@@ -138,6 +138,31 @@ class EventContollerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON)
                         .content(objectMapper.writeValueAsString(event)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    @DisplayName("Validation Test : 잘못된 값의 입력")
+    public void create_event_bad_request_Wrong_input2() throws Exception {
+        EventDto eventDto = EventDto.builder()
+                .name("Spring")
+                .description("Rest API Development with Spring")
+                .beginEventDateTime(LocalDateTime.of(2021, 9, 30, 14, 47 ))
+                .closeEnrollmentDateTime(LocalDateTime.of(2021, 9, 29, 14, 47))
+                .beginEventDateTime(LocalDateTime.of(2021, 9, 29, 14, 47))
+                .endEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
+                .basePrice(10000)
+                .maxPrice(200)
+                .limitOfEnrollment(100)
+                .location("강남역 D2 스타텁 팩토리")
+                .build();
+
+        mockMvc.perform(post("/api/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaTypes.HAL_JSON)
+                        .content(objectMapper.writeValueAsString(eventDto)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
