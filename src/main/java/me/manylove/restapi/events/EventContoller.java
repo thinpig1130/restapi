@@ -41,7 +41,9 @@ public class EventContoller {
 //            return ResponseEntity.badRequest().build();
             return ResponseEntity.badRequest().body(errors);
         }
+
         Event event = modelMapper.map(eventDto, Event.class);
+        event.update();
         Event newEvent = this.eventRepository.save(event);
 
         URI createUri = linkTo(EventContoller.class).slash(newEvent.getId()).toUri();

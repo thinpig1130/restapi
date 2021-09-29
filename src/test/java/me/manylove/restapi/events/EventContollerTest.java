@@ -36,35 +36,40 @@ class EventContollerTest {
     @DisplayName("정상적으로 이벤트를 생성하는 테스트")
     public void createEvent() throws Exception {
 
-        Event event = Event.builder()
-                .id(100)
+        EventDto event = EventDto.builder()
                 .name("Spring")
                 .description("Rest API Development with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2021, 9, 29, 14, 47 ))
                 .closeEnrollmentDateTime(LocalDateTime.of(2021, 10, 29, 14, 47))
                 .beginEventDateTime(LocalDateTime.of(2021, 9, 30, 14, 47))
                 .endEventDateTime(LocalDateTime.of(2021, 10, 30, 14, 47))
-                .basePrice(100)
-                .maxPrice(200)
+                .basePrice(0)
+                .maxPrice(0)
                 .limitOfEnrollment(100)
                 .location("강남역 D2 스타텁 팩토리")
-                .free(true)
-                .offLine(false)
                 .build();
 
         mockMvc.perform(post("/api/events")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaTypes.HAL_JSON)
-                    .content(objectMapper.writeValueAsString(event)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaTypes.HAL_JSON)
+                        .content(objectMapper.writeValueAsString(event)))
                 .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").exists())
-                .andExpect(header().exists(HttpHeaders.LOCATION))
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-                .andExpect(jsonPath("id").value(Matchers.not(100)))
-                .andExpect(jsonPath("free").value(Matchers.not(true)))
-                .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()));
-
+                .andExpectAll(
+                        status().isCreated(),
+                        jsonPath("id").exists(),
+                        header().exists(HttpHeaders.LOCATION),
+                        header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE),
+                        jsonPath("free").value(true),
+                        jsonPath("offline").value(true),
+                        jsonPath("eventStatus").value(EventStatus.DRAFT.name())
+                );
+//                .andExpect(status().isCreated())
+//                .andExpect(jsonPath("id").exists())
+//                .andExpect(header().exists(HttpHeaders.LOCATION))
+//                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+//                .andExpect(jsonPath("free").value(true))
+//                .andExpect(jsonPath("offline").value(true))
+//                .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()));
     }
 
 //    @Test
