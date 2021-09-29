@@ -3,6 +3,7 @@ package me.manylove.restapi.events;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.LinkBuilder;
 import org.springframework.hateoas.server.mvc.ControllerLinkRelationProvider;
@@ -57,6 +58,7 @@ public class EventContoller {
 //        EntityModel<Event> eventEntityModel = EntityModel.of(newEvent);
         eventEntityModel.add(linkTo(EventContoller.class).withRel("query-events"));
         eventEntityModel.add(selLinkBuilder.withRel("update-event"));
+        eventEntityModel.add(Link.of("/docs/index.html#resources-events-create").withRel("profile"));
         return ResponseEntity.created(createUri).body(eventEntityModel);
     }
 }

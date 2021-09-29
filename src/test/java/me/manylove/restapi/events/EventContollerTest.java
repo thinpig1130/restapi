@@ -3,6 +3,7 @@ package me.manylove.restapi.events;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.manylove.restapi.comom.RestDocsConfiguration;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,14 +16,20 @@ import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.time.LocalDateTime;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,10 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
 class EventContollerTest {
-
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     ObjectMapper objectMapper;
 
@@ -77,9 +82,10 @@ class EventContollerTest {
                 )
                 .andDo(document("create-event",
                         links(
-                             linkWithRel("self").description("link to self"),
-                             linkWithRel("query-events").description("link to query evnets"),
-                             linkWithRel("update-event").description("link to update an existing")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("query-events").description("link to query evnets"),
+                                linkWithRel("update-event").description("link to update an existing"),
+                                linkWithRel("profile").description("link to profile an existing")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -118,7 +124,8 @@ class EventContollerTest {
                                 fieldWithPath("eventStatus").description("eventStatus of new event"),
                                 fieldWithPath("_links.self.href").description("다음 링크 고고"),
                                 fieldWithPath("_links.query-events.href").description("다음 링크 고고"),
-                                fieldWithPath("_links.update-event.href").description("다음 링크 고고")
+                                fieldWithPath("_links.update-event.href").description("다음 링크 고고"),
+                                fieldWithPath("_links.profile.href").description("link to profile an existing")
                         )
                 ));
         ;
