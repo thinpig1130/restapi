@@ -34,14 +34,16 @@ public class EventContoller {
     @PostMapping
     public ResponseEntity createEvent(@Validated @RequestBody EventDto eventDto, Errors errors){
         if(errors.hasErrors()){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
         eventValidator.validate(eventDto, errors);
         if(errors.hasErrors()){
-            return ResponseEntity.badRequest().build();
+//            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
         Event event = modelMapper.map(eventDto, Event.class);
         Event newEvent = this.eventRepository.save(event);
+
         URI createUri = linkTo(EventContoller.class).slash(newEvent.getId()).toUri();
         return ResponseEntity.created(createUri).body(event);
     }

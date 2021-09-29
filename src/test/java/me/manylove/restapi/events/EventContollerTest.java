@@ -33,17 +33,17 @@ class EventContollerTest {
     ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("Event 생성 API 확인 / 받기로 한 값 이외의 무시")
+    @DisplayName("정상적으로 이벤트를 생성하는 테스트")
     public void createEvent() throws Exception {
 
         Event event = Event.builder()
                 .id(100)
                 .name("Spring")
                 .description("Rest API Development with Spring")
-                .beginEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47 ))
-                .closeEnrollmentDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
-                .beginEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
-                .endEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
+                .beginEnrollmentDateTime(LocalDateTime.of(2021, 9, 29, 14, 47 ))
+                .closeEnrollmentDateTime(LocalDateTime.of(2021, 10, 29, 14, 47))
+                .beginEventDateTime(LocalDateTime.of(2021, 9, 30, 14, 47))
+                .endEventDateTime(LocalDateTime.of(2021, 10, 30, 14, 47))
                 .basePrice(100)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
@@ -52,8 +52,6 @@ class EventContollerTest {
                 .offLine(false)
                 .build();
 
-        // .perform(요청 생성)
-        // .andExpect(기대하는 결과)
         mockMvc.perform(post("/api/events")
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaTypes.HAL_JSON)
@@ -66,7 +64,7 @@ class EventContollerTest {
                 .andExpect(jsonPath("id").value(Matchers.not(100)))
                 .andExpect(jsonPath("free").value(Matchers.not(true)))
                 .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()));
-//                .andExpect(jsonPath("offLine").value(Matchers.not(false)));
+
     }
 
 //    @Test
@@ -101,7 +99,7 @@ class EventContollerTest {
 //    }
 
 //    @Test
-//    @DisplayName("Event 생성 API 오류 확인")
+//    @DisplayName("입력 받을 수 없는 값을 사용한 경우에 에러가 발생하는 테스트")
 //    public void createEventError() throws Exception {
 //
 //        Event event = Event.builder()
@@ -129,7 +127,7 @@ class EventContollerTest {
 //    }
 
     @Test
-    @DisplayName("Validation Test : 입력되어야 할 값이 입력되지 않음")
+    @DisplayName("입력 값이 비어있는 경우에 에러가 발생하는 테스트")
     public void create_event_bad_request_empty_input() throws Exception {
         EventDto event = EventDto.builder()
                 .build();
@@ -144,12 +142,12 @@ class EventContollerTest {
     }
 
     @Test
-    @DisplayName("Validation Test : 잘못된 값의 입력")
+    @DisplayName("입력 값이 잘못된 경우에 에러가 발생하는 테스트")
     public void create_event_bad_request_Wrong_input2() throws Exception {
         EventDto eventDto = EventDto.builder()
                 .name("Spring")
                 .description("Rest API Development with Spring")
-                .beginEventDateTime(LocalDateTime.of(2021, 9, 30, 14, 47 ))
+                .beginEnrollmentDateTime(LocalDateTime.of(2021, 9, 30, 14, 47 ))
                 .closeEnrollmentDateTime(LocalDateTime.of(2021, 9, 29, 14, 47))
                 .beginEventDateTime(LocalDateTime.of(2021, 9, 29, 14, 47))
                 .endEventDateTime(LocalDateTime.of(2021, 9, 28, 14, 47))
@@ -164,7 +162,11 @@ class EventContollerTest {
                         .accept(MediaTypes.HAL_JSON)
                         .content(objectMapper.writeValueAsString(eventDto)))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
-
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0].objectName").exists())
+//                .andExpect(jsonPath("$[0].field").exists())
+                .andExpect(jsonPath("$[0].defaultMessage").exists())
+                .andExpect(jsonPath("$[0].code").exists())
+        ;
     }
 }
