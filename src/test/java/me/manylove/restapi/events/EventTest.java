@@ -1,9 +1,10 @@
 package me.manylove.restapi.events;
 
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,55 +38,45 @@ class EventTest {
         assertThat(event.getDescription()).isEqualTo(description);
     }
 
-    @Test
-    @DisplayName("Free 자동입력 테스트")
-    void testFree(){
+    @DisplayName("free 속성 갱신 테스트 : (basePrice, maxPrice) -> isFree()")
+    @ParameterizedTest(name="{index} ({0}, {1}) -> {2}")
+    @CsvSource({
+            "0, 0, true",
+            "100, 0, falae",
+            "0, 1000, falae"
+    })
+    void testFree(int basePrice, int maxPrice, boolean isFree){
         // Given
         Event event = Event.builder()
-                .basePrice(0)
-                .maxPrice(0)
+                .basePrice(basePrice)
+                .maxPrice(maxPrice)
                 .build();
         // When
         event.update();
 
         // Then
-        assertTrue(event.isFree());
-
-        // Given
-        event = Event.builder()
-                .basePrice(0)
-                .maxPrice(100)
-                .build();
-        // When
-        event.update();
-
-        // Then
-        assertFalse(event.isFree());
-
+        assertEquals(event.isFree(), isFree);
     }
 
-    @Test
-    @DisplayName("Offline 자동입력 테스트")
-    void testOffline(){
+
+    @DisplayName("Offline 속성 갱신 테스트 : (location) -> isOffline()")
+    @ParameterizedTest(name="{index} ({0}) -> {2}")
+    @CsvSource({
+            "'여기', true",
+            "'', false",
+            "' ', false",
+            ", false"
+    })
+    void testOffline(String location, Boolean isOffline){
         // Given
         Event event = Event.builder()
-                .location("여기")
+                .location(location)
                 .build();
         // When
         event.update();
 
         // Then
-        assertTrue(event.isOffline());
-
-        // Given
-        event = Event.builder()
-                .build();
-        // When
-        event.update();
-
-        // Then
-        assertFalse(event.isOffline());
-
+        assertEquals(event.isOffline(), isOffline);
     }
 
 }
