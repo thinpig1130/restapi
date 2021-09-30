@@ -40,7 +40,6 @@ public class Event {
         }else{
             this.offline = true;
         }
-
     }
 }
 
